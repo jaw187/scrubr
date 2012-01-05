@@ -1,0 +1,5 @@
+{ username: { is: 'username', required: true },
+  password: { is: 'password', required: true },
+  state: { isIn: [ 'NJ', 'CA' ] },
+  string: { isString: true },
+  bounds: { inBounds: { upper: 10, lower: 5 } } }
