@@ -15,7 +15,7 @@ body = {
   password : 'HHHHjjjj1111',
   state : 'NJ',
   string : 'a',
-  bounds : 6
+  age : 6
 }
 
 scrubr.scrub(body);
