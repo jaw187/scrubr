@@ -1,5 +1,27 @@
-{ username: { is: 'username', required: true },
+scrubr = require('./scrubr')
+
+definition = { 
+  username: { is: 'username', required: true },
   password: { is: 'password', required: true },
   state: { isIn: [ 'NJ', 'CA' ] },
   string: { isString: true },
-  bounds: { inBounds: { upper: 10, lower: 5 } } }
+  bounds: { inBounds: { upper: 10, lower: 5 } } 
+}
+
+scrubr.define(definition);
+
+body = {
+  username : 'james',
+  password : 'HHHHjjjj1111',
+  state : 'NJ',
+  string : 'a',
+  bounds : 6
+}
+
+scrubr.scrub(body);
+//// PASSSSSSS
+
+body.bounds=22;
+scrubr.scrub(body);
+//// FAIL
+//   bounds is not within the bounds of 10(upper) and 5
