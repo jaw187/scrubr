@@ -21,7 +21,7 @@ body = {
 scrubr.scrub(body);
 //// PASSSSSSS
 
-body.bounds=22;
+body.age=22;
 scrubr.scrub(body);
 //// FAIL
 //   bounds is not within the bounds of 10(upper) and 5
