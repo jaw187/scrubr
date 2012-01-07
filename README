@@ -1,3 +1,5 @@
+
+```javascript
 scrubr = require('./scrubr')
 
 definition = { 
@@ -5,7 +7,7 @@ definition = {
   password: { is: 'password', required: true },
   state: { isIn: [ 'NJ', 'CA' ] },
   string: { isString: true },
-  bounds: { inBounds: { upper: 10, lower: 5 } } 
+  age : { inBounds: { upper: 10, lower: 5 } } 
 }
 
 scrubr.define(definition);
@@ -24,4 +26,8 @@ scrubr.scrub(body);
 body.age=22;
 scrubr.scrub(body);
 //// FAIL
-//   bounds is not within the bounds of 10(upper) and 5
+//   age is not within the bounds of 10(upper) and 5
+```
+
+Depends on Caja-HTML-Sanitizer
+https://github.com/theSmaw/Caja-HTML-Sanitizer
