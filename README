@@ -1,5 +1,5 @@
 
-```javascript
+```
 scrubr = require('./scrubr')
 
 definition = { 
