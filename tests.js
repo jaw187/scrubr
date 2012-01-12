@@ -70,9 +70,9 @@ TESTS = {
         ERRMSGS[name]=errmsg;
         return true;
       }
-      else return "Test exists";
+      else return new Error("Test exists");
     }
-    else return "Invalid Name or Test";
+    else return new Error("Invalid Name or Test");
   },
   _deleteTest : function (name) {
     if (typeof name === "string") {
@@ -81,11 +81,23 @@ TESTS = {
         ERRMSGS[name]=null;
         return true;
       }
-      else return "Test does not exsit";
+      else return new Error("Test does not exsit");
     }
-    else return "Bad test name";
+    else return new Error("Bad test name");
+  },
+  _redefineTest : function (name,test,errmsg) {
+    var d = this._deleteTest(name);
+    if (d === true) {
+      return this._addTest(name);
+    }
+    return d;
   }
 };
+
+exports.exists = function (name) {
+  if (TESTS[name]) return true;
+  else return false;
+}
 
 exports.addTest = function (name,test,errmsg) {
   return TESTS._addTest(name,test,errmsg);
