@@ -5,33 +5,31 @@
 ///// 
 
 var util=require('util'),
-    tests=require('./tests');
+    tests=require('./tests'),
+    scrubers=require('./scrubers'),
+    DEFINITION = null;
 
-var SQL_SINGLE_QUOTE_REPLACEMENT = '&#146;';
-
-var DEFINITION = false;
-
-var SCRUBERS = {
-  'SQL' : function (val) {
-    if (val.replace) {
-      val = val.replace(/'/g,SQL_SINGLE_QUOTE_REPLACEMENT);
-      return val; 
-    }
-    else {
-      //ERROR
-      
-    }
-  },
-  'HTML' : function (val) {
-    if (typeof val === "string") {
-      // Google Caja's HTML Sanitizer
-      // https://github.com/theSmaw/Caja-HTML-Sanitizer
-      return require('sanitizer').sanitize(val);
-    }
-    else {
-      //ERROR
+var validateDefinition = function (def) {
+  var badTests=[];
+  for (field in def) {
+    for (test in def[field]) {
+      if (test === "scrub") {
+        for (var i =0;i<def[field].scrub;i++) {
+          if (!scrubers[def[field].scrub[i]]) {
+            badTests.push(s + " is not a known scruber");
+console.log(s);
+          }
+        }
+      }
+      else if (test !== "required" && !tests.exists(test)) {
+        badTests.push(test + " is a bad test for " + field);
+      }
     }
   }
+  if (badTests.length > 0) {
+    return new Error(badTests);
+  }
+  else return true;
 }
 
 exports.scrub = function(data) {
@@ -42,8 +40,15 @@ exports.scrub = function(data) {
 
   if (DEFINITION) {
     for (field in DEFINITION) {
-      if (DEFINITION[field].scrub) {
-
+      if (DEFINITION[field].scrub && DEFINITION[field].scrub.length > 0) {
+        for (var i=0;i<DEFINITION[field].scrub.length;i++) {
+          if (scrubers[DEFINITION[field].scrub[i]]) {
+            data[field] = scrubers[DEFINITION[field].scrub[i]](data[field]);
+          }
+          else {
+            //error
+          }
+        }
       }
       for (test in DEFINITION[field]) {
         if (test !== 'required' && test !== 'scrub') {
@@ -99,7 +104,11 @@ exports.scrub = function(data) {
 }
 
 exports.define = function (def) {
-  DEFINITION = def;
+  defCheck = validateDefinition(def);
+  if (defCheck === true)
+    DEFINITION = def;
+
+  return defCheck;
 }
 
 
