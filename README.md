@@ -72,6 +72,7 @@ app.post('/form',routes.form_success);
 ```
 
 In routes/index.js
+
 ```javascript
 exports.form = function (req,res) {
   if (req.scrubr && req.scrubr.failures) {
@@ -91,7 +92,7 @@ exports.form_success= function (req,res) {
 ```
 
 Later on....in form.jade
-```
+```jade
 h1= title
 p Welcome to #{title}
 -if (failures)
