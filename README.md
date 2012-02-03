@@ -109,8 +109,8 @@ p Welcome to #{title}
 form(method='post', action='/form')
   #username
     span Username
-    -if (body.username)
-      input(type='text', name='username')=body.username
+    -if (payload.username)
+      input(type='text', name='username', value='#{payload.username}')
     -else
       input(type='text', name='username')
 
