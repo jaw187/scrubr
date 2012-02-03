@@ -4,6 +4,8 @@ Because we can never trust data a client sends to us.
 
 Scrubr contains a set of utilities to parse a payload against a definition.  It can be used on it's own or it can be used as middleware for Connect.
 
+When used as Middleware for Connect or Express, Scrubr can be run against all data in req.body.  Define data once and then write logic in templates which display form data.  See Middleware Example below.
+
 Install
 -------
 ```
