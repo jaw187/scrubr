@@ -92,7 +92,8 @@ exports.form_success= function (req,res) {
 ```
 
 Later on....in form.jade
-```jade
+
+```
 h1= title
 p Welcome to #{title}
 -if (failures)
