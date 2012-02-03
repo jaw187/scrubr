@@ -2,15 +2,13 @@ Scrubr
 ======
 Because we can never trust data a client sends to us.
 
+Scrubr contains a set of utilities to parse a payload against a definition.  It can be used on it's own or it can be used as middleware for Connect.
+
 Install
 -------
 ```
 $ npm install scrubr
 ```
-
-Assumptions
------------
-- Forms are displayed using the GET method.
 
 Example
 -------
@@ -47,7 +45,79 @@ scrubr.scrub(body);
 
 Middleware
 ----------
+### Assumptions
+  - Forms use the same path.  GET is used to display the form and POST is used to parse the form.
 
+### Example
 ```javascript
+var scrubr = require('scrubr');
+    scrubr.define({
+      username: { is: 'username', required: ['/form']},
+      attack: { isString: true, scrub: ['SQL','HTML']}
+    });
 
+//////// NOTE THAT REQUIRED CAN BE AN ARRAY OF PATHS WHERE THIS FIELD IS REQUIRED
+
+app.configure(function(){
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'jade');
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(scrubr.middleware());
+  ....
+  });
+
+app.get('/form',routes.form);
+app.post('/form',routes.form_success);
 ```
+
+In routes/index.js
+```javascript
+exports.form = function (req,res) {
+  if (req.scrubr && req.scrubr.failures) {
+    fail=req.scrubr.failures;
+    body=req.body;
+  }
+  else {
+    fail=false;
+    req.body=false;
+  }
+  res.render('form',{ title: 'Scrubr', body: req.body, failures: fail });
+};
+
+exports.form_success= function (req,res) {
+  res.render('form_success',{ title: 'Scrubr', body: req.body });
+};
+```
+
+Later on....in form.jade
+```
+h1= title
+p Welcome to #{title}
+-if (failures)
+  #failures
+    h2 Failures
+    ul
+      -failures.forEach(function (failure) {
+        li.failure=failure
+      -})
+
+form(method='post', action='/form')
+  #username
+    span Username
+    -if (body.username)
+      input(type='text', name='username')=body.username
+    -else
+      input(type='text', name='username')
+
+  #attackstring
+    span Attack String
+    -if (payload.attack)
+      input(type='text', name='attack', value='#{payload.attack}')
+    -else
+      input(type='text,', name='attack')
+
+  #btn
+    input(type='submit')
+```
+
